@@ -21,7 +21,7 @@ let app = http.createServer(
   function(request,response) {
     request.addListener('end',
   function() {
-    filer.serve(request,response);
+    file.serve(request,response);
   }
 ).resume();
   }
