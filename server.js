@@ -9,7 +9,7 @@ let port = process.env.PORT;
 let directory = __dirname + '/public';
 
 /**/
-if ((typeof port == 'undefined')|| (port ===null)){
+if ((typeof port == 'undefined')|| (port === null)){
   port = 8080;
   directory = './public';
 }
