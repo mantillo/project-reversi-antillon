@@ -10,7 +10,11 @@
 
     <style>
       body {
-        background-color: darkseagreen;
+        background-color: rgb(121, 51, 255);
+      }
+      #fire-attribute, #snow-attribute {
+        color: white;
+        font-size: 50%;
       }
     </style>
 
@@ -21,10 +25,10 @@
       <div class="row" id="My layout looks weird without this row"></div>
       <div class="row m-3">
         <div class="col text-center">
-          <a class="btn btn-success text-nowrap" href="about.html">About</a>
+          <a class="btn btn-warning text-nowrap" href="about.html">About</a>
         </div>
         <div class="col text-center">
-          <a class="btn btn-success text-nowrap" href="https://en.wikipedia.org/wiki/Reversi">Rules</a>
+          <a class="btn btn-warning text-nowrap" href="https://en.wikipedia.org/wiki/Reversi">Rules</a>
         </div>
       </div>
       <div class="row m-3">
@@ -37,13 +41,20 @@
           <div class="input-group">
             <span class="input-group-text" id="displayName">Name</span>
             <input type="text" class="form-control text-nowrap" id="nameInput" placeholder="Choose your display name" aria-label="Enter your display name for use while playing Reversi" aria-describedby="displayName"/>
-            <button type="submit" class="btn btn-primary text-nowrap" id="lobbyButton" onclick="goToLobby()">Enter Lobby</button>
+            <button type="submit" class="btn btn-warning text-nowrap" id="lobbyButton" onclick="goToLobby()">Enter Lobby</button>
           </div>
         </div>
       </div>
       <div class="row m-3">
         <div class="col text-center">
           <img class="img-fluid" src="assets/images/bottom-splash.png" alt="Reversi Logo 1"/>
+        </div>
+      </div>
+      <div class="row m-3">
+        <div class="col text-center">
+          <p style="color:white; font-size:50%"></br>Attribution for images used:</p>
+          <a href="https://www.freepik.com/vectors/icons" id="fire-attribute">Fire icon vector created by macrovector - www.freepik.com </br></a>
+          <a href='https://www.freepik.com/vectors/snow' id="snow-attribute">Snow vector created by freepik - www.freepik.com</a>
         </div>
       </div>
     </div>
