@@ -492,7 +492,7 @@ io.on('connection', (socket) => {
       serverLog('play_token command failed', JSON.stringify(response));
       return;
     }
-    let column = payload.row;
+    let column = payload.column;
     if ((typeof column == 'undefined') || (column === null)) {
       response = {};
       response.result = 'fail';
@@ -642,5 +642,30 @@ function send_game_update(socket, game_id, message) {
   })
 
   /*Check if the game is over*/
+  let count = 0;
+  for (let row =0; row <8; row++) {
+    for (let column = 0; column <8; column++) {
+      if (game[game_id].board[row][column] != ' '){
+        count++;
+      }
+    }
+  }
+  if (count === 64) {
+    let payload = {
+      result:'success',
+      game_id:game_id,
+      game1:game[game_id],
+      who_won:'everyone'
+    }
+    io.in(game_id).emit('game_over',payload);
 
+    /*Delete old games after one hour*/
+    setTimeout(
+      ((id) => {
+        return (() => {
+          delete game[id];
+        });
+      })(game_id), 60 * 60 * 1000
+    );
+  }
 }
