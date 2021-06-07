@@ -1,30 +1,40 @@
   body {
-    background-color:rgb(191, 158, 255);
+    background-image: linear-gradient(0deg, rgba(121, 51, 255, 1) 35%, rgba(104, 25, 255, 1) 65%, rgba(87, 0, 255, 1) 100%);
   }
 
-  .headerrow, #messagePane {
-    background-color:rgb(121, 51, 255);
+  .headerrow, #whitesum, #vs, #blacksum {
+    /*background-color:rgb(191, 158, 255);*/
+    color: white;
+  }
+
+    #messagePane {
+    background-color:rgb(191, 158, 255);
+    color:black;
+    border: 1px solid rgba(104, 25, 255);
+    padding: 0px 10px 10px 10px;
   }
 
   .join_room_response,
   .left_room_response {
-    background-color: rgb(191, 158, 255);
+    background-color: rgb(240,240,240);
+    padding: 0px 10px 0px 10px;
   }
   .chat_message  {
     font-size:125%;
     margin: 1px 1px 1px 1px;
-    color: white;
+    color: black;
   }
 
   table#game_board{
     border:4px solid black;
-    marging:0px;
+    margin:0px;
     padding:0px;
   }
   table#game_board td{
     border:1px solid black;
-    marging: 0px;
+    margin: 0px;
     padding:0px;
+    background-color: rgb(191, 158, 255);
   }
 
 td.hovered_over:hover {

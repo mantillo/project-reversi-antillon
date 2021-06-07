@@ -286,7 +286,22 @@ socket.on('game_update', (payload) => {
     return;
   }
 
-  $("#my_color").html('<h3 id="my_color"> I am ' + my_color + '</h3>');
+  if (my_color === 'fire') {
+    $("#my_color").html('<h3 id="my_color" style="color:white"> I am fire</h3>');
+  } else if (my_color === 'ice') {
+    $("#my_color").html('<h3 id="my_color" style="color:white"> I am ice</h3>');
+  } else {
+    $("#my_color").html('<h3 id="my_color" style="color:white"> Error: I don\'t know what token I am</h3>');
+  }
+
+  if (payload.game.whose_turn === 'fire') {
+    $("#my_color").append('<h4 style="color:white">It is fire\'s turn</h4>');
+  } else if (payload.game.whose_turn === 'ice') {
+    $("#my_color").append('<h4 style="color:white">It is ice\'s turn</h4>');
+  } else {
+    $("#my_color").append('<h4 style="color:white"> Error: Don\'t know whose turn it is</h4>');
+    console.log('game.whose_turn =' + payload.game.whose_turn);
+  }
 
   let whitesum = 0;
   let blacksum = 0;
@@ -296,8 +311,7 @@ socket.on('game_update', (payload) => {
     for (let column = 0; column < 8; column++) {
       if (old_board[row][column] === 'w') {
         whitesum++;
-      }
-      else if (old_board[row][column] === 'b') {
+      } else if (old_board[row][column] === 'b') {
         blacksum++;
       }
       if (old_board[row][column] !== board[row][column]) {
@@ -337,9 +351,22 @@ socket.on('game_update', (payload) => {
 
         const t = Date.now();
         $('#' + row + '_' + column).html('<img class="img-fluid" src="assets/images/' + graphic + '?time=' + t + '" alt="' + altTag + '" />');
+      }
+      /*Set up interactivity*/
+      $('#' + row + '_' + column).off('click');
+      $('#' + row + '_' + column).removeClass('hovered_over');
+      console.log('whose_turn: '+payload.game.whose_turn + ' '+ my_color.substr(0,1) + ' ' + payload.game.legal_moves); /*This line is for troubleshooting*/
 
-        $('#' + row + '_' + column).off('click');
-        if (board[row][column] === ' ') {
+      /*my_color will be either 'fire' or 'ice', but my board has b's and w's for 'white' and 'black'. I need to translate fire and ice back to white and black. */
+      let my_color_substr ='';
+      if (my_color.substr(0,1) === 'i') {
+        my_color_substr = 'b';
+      } else if (my_color.substr(0,1) === 'f') {
+        my_color_substr = 'w';
+      }
+
+      if (payload.game.whose_turn === my_color) {
+        if (payload.game.legal_moves[row][column] === my_color_substr) {
           $('#' + row + '_' + column).addClass('hovered_over');
           $('#' + row + '_' + column).click(((r, c) => {
             return (() => {
@@ -352,15 +379,13 @@ socket.on('game_update', (payload) => {
               socket.emit('play_token', payload);
             });
           })(row, column));
-        } else {
-        $('#' + row + '_' + column).removeClass('hovered_over');
+        }
       }
     }
   }
-}
-$("#whitesum").html(whitesum);
-$("#blacksum").html(blacksum);
-old_board = board;
+  $("#whitesum").html(whitesum);
+  $("#blacksum").html(blacksum);
+  old_board = board;
 })
 
 socket.on('play_token_response', (payload) => {
@@ -370,6 +395,7 @@ socket.on('play_token_response', (payload) => {
   }
   if (payload.result === 'fail') {
     console.log(payload.message);
+    alert(payload.message);
     return;
   }
 })
@@ -386,8 +412,8 @@ socket.on('game_over', (payload) => {
   /*Announce with a button to the lobby*/
   let nodeA = $("<div id='game_over'></div>");
   let nodeB = $("<h1>Game Over</h1>");
-  let nodeC = $("<h2>"+payload.who_won+" won!</h2>");
-  let nodeD = $("<a href='lobby.html?username="+username+"' class='btn btn-lg btn-success' role='button'>Return to lobby</a>");
+  let nodeC = $("<h2>" + payload.who_won + " won!</h2>");
+  let nodeD = $("<a href='lobby.html?username=" + username + "' class='btn btn-lg btn-success' role='button'>Return to lobby</a>");
   nodeA.append(nodeB);
   nodeA.append(nodeC);
   nodeA.append(nodeD);
@@ -405,7 +431,7 @@ $(() => {
   socket.emit('join_room', request);
 
   $("#lobbyTitle").html(username + "'s Lobby");
-  $('#quit').html("<a href='lobby.html?username="+username+"' class='btn btn-lg btn-danger' role='button'>Quit</a>");
+  $('#quit').html("<a href='lobby.html?username=" + username + "' class='btn btn-lg btn-danger' role='button'>Quit</a>");
 
 
   $('#chatMessage').keypress(function(e) {
