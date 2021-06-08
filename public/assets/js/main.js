@@ -272,15 +272,15 @@ socket.on('game_update', (payload) => {
     return;
   }
 
-  let board = payload.game.board;
+  let board = payload.game1.board;
   if ((typeof board == 'undefined') || (board === null)) {
     console.log('Server did not send a valid board to display');
     return;
   }
   /*Update my color*/
-  if (socket.id === payload.game.player_white.socket) {
+  if (socket.id === payload.game1.player_white.socket) {
     my_color = 'fire';
-  } else if (socket.id === payload.game.player_black.socket) {
+  } else if (socket.id === payload.game1.player_black.socket) {
     my_color = 'ice';
   } else {
     window.location.href = 'lobby.html?username=' + username;
@@ -295,13 +295,13 @@ socket.on('game_update', (payload) => {
     $("#my_color").html('<h3 id="my_color" style="color:white"> Error: I don\'t know what token I am</h3>');
   }
 
-  if (payload.game.whose_turn === 'fire') {
+  if (payload.game1.whose_turn === 'fire') {
     $("#my_color").append('<h4 style="color:white">It is fire\'s turn</h4>');
-  } else if (payload.game.whose_turn === 'ice') {
+  } else if (payload.game1.whose_turn === 'ice') {
     $("#my_color").append('<h4 style="color:white">It is ice\'s turn</h4>');
   } else {
     $("#my_color").append('<h4 style="color:white"> Error: Don\'t know whose turn it is</h4>');
-    console.log('game.whose_turn =' + payload.game.whose_turn);
+
   }
 
   let whitesum = 0;
@@ -310,9 +310,9 @@ socket.on('game_update', (payload) => {
   /*Animate changes to the board*/
   for (let row = 0; row < 8; row++) {
     for (let column = 0; column < 8; column++) {
-      if (old_board[row][column] === 'w') {
+      if (board[row][column] === 'w') {
         whitesum++;
-      } else if (old_board[row][column] === 'b') {
+      } else if (board[row][column] === 'b') {
         blacksum++;
       }
       if (old_board[row][column] !== board[row][column]) {
@@ -349,14 +349,14 @@ socket.on('game_update', (payload) => {
           graphic = "error.gif";
           altTag = "error";
         }
-
+        console.log('whitesum after board animation: ' + whitesum);
         const t = Date.now();
         $('#' + row + '_' + column).html('<img class="img-fluid" src="assets/images/' + graphic + '?time=' + t + '" alt="' + altTag + '" />');
       }
       /*Set up interactivity*/
       $('#' + row + '_' + column).off('click');
       $('#' + row + '_' + column).removeClass('hovered_over');
-      /*console.log('whose_turn: '+payload.game.whose_turn + ' '+ my_color.substr(0,1) + ' ' + payload.game.legal_moves);*/
+      /*console.log('whose_turn: '+payload.game1.whose_turn + ' '+ my_color.substr(0,1) + ' ' + payload.game1.legal_moves);*/
       /*This line is for troubleshooting*/
 
       /*my_color will be either 'fire' or 'ice', but my board has b's and w's for 'white' and 'black'. I need to translate fire and ice back to white and black. */
@@ -367,8 +367,8 @@ socket.on('game_update', (payload) => {
         my_color_substr = 'w';
       }
 
-      if (payload.game.whose_turn === my_color) {
-        if (payload.game.legal_moves[row][column] === my_color_substr) {
+      if (payload.game1.whose_turn === my_color) {
+        if (payload.game1.legal_moves[row][column] === my_color_substr) {
           $('#' + row + '_' + column).addClass('hovered_over');
           $('#' + row + '_' + column).click(((r, c) => {
             return (() => {
@@ -383,6 +383,7 @@ socket.on('game_update', (payload) => {
           })(row, column));
         }
       }
+      console.log('whitesum after clicking legal move: ' + whitesum);
     }
   }
   clearInterval(interval_timer)
@@ -407,7 +408,7 @@ socket.on('game_update', (payload) => {
       }
     })
 
-  })(payload.game.last_move_time), 1000);
+  })(payload.game1.last_move_time), 1000);
 
   $("#whitesum").html(whitesum);
   $("#blacksum").html(blacksum);

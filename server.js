@@ -794,7 +794,7 @@ function send_game_update(socket, game_id, message) {
     let payload = {
       result: 'success',
       game_id: game_id,
-      game: game[game_id],
+      game1: game[game_id],
       message: message
     }
     io.of("/").to(game_id).emit('game_update', payload);
