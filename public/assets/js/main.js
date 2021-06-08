@@ -212,7 +212,7 @@ socket.on('player_disconnected', (payload) => {
     domElements.hide("fade", 500);
   }
 
-  let newHTML = '<p class=\'left_room_response\'>' + payload.username + ' left the ' + payload.room + '. (There are ' + payload.count + ' users in this room)</p>';
+  let newHTML = '<p class=\'left_room_response\'>' + payload.username + ' left the chatroom. (There are ' + payload.count + ' users in this room)</p>';
   let newNode = $(newHTML);
   newNode.hide();
   $('#messages').prepend(newNode);
@@ -249,17 +249,18 @@ socket.on('send_chat_message_response', (payload) => {
 })
 
 let old_board = [
-  ['?', '?', '?', '?', '?', '?', '?', '?'],
-  ['?', '?', '?', '?', '?', '?', '?', '?'],
-  ['?', '?', '?', '?', '?', '?', '?', '?'],
-  ['?', '?', '?', '?', '?', '?', '?', '?'],
-  ['?', '?', '?', '?', '?', '?', '?', '?'],
-  ['?', '?', '?', '?', '?', '?', '?', '?'],
-  ['?', '?', '?', '?', '?', '?', '?', '?'],
-  ['?', '?', '?', '?', '?', '?', '?', '?']
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
 ];
 
 let my_color = "";
+let interval_timer;
 
 socket.on('game_update', (payload) => {
   if ((typeof payload == 'undefined') || (payload === null)) {
@@ -355,7 +356,7 @@ socket.on('game_update', (payload) => {
       /*Set up interactivity*/
       $('#' + row + '_' + column).off('click');
       $('#' + row + '_' + column).removeClass('hovered_over');
-      console.log('whose_turn: '+payload.game.whose_turn + ' '+ my_color.substr(0,1) + ' ' + payload.game.legal_moves); /*This line is for troubleshooting*/
+      /*console.log('whose_turn: '+payload.game.whose_turn + ' '+ my_color.substr(0,1) + ' ' + payload.game.legal_moves);*/ /*This line is for troubleshooting*/
 
       /*my_color will be either 'fire' or 'ice', but my board has b's and w's for 'white' and 'black'. I need to translate fire and ice back to white and black. */
       let my_color_substr ='';
@@ -383,6 +384,32 @@ socket.on('game_update', (payload) => {
       }
     }
   }
+  clearInterval(interval_timer)
+  interval_timer = setInterval( ((last_time) => {
+    return ( () => {
+      let d = new Date();
+      let elapsed_m = d.getTime() - last_time;
+      let minutes = Math.floor(elapsed_m/(60 * 1000));
+      let seconds = Math.floor((elapsed_m % (60 * 1000))/1000);
+      let total = minutes * 60 + seconds;
+      if (total > 100) {
+        total = 100;
+      }
+      $("#elapsed").css("width",total+"%").attr("aria-valuenow", total);
+      let timestring = "" + seconds;
+      timestring = timestring.padStart(2, '0');
+      timestring = minutes + ":" +timestring;
+      if (total <100) {
+        $("#elapsed").html(timestring);
+      }
+      else {
+        $("#elapsed").html("Times up!");
+      }
+    })
+
+  })(payload.game.last_move_time)
+    , 1000);
+
   $("#whitesum").html(whitesum);
   $("#blacksum").html(blacksum);
   old_board = board;
