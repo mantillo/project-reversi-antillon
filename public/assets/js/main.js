@@ -336,7 +336,7 @@ socket.on('game_update', (payload) => {
         } else if ((old_board[row][column] === 'w') && (board[row][column] === ' ')) {
           graphic = "empty.gif"; /*empty to white*/
           altTag = "empty space";
-        } else if ((old_board[row][column] === 'b') && (board[row][column] === 'b')) {
+        } else if ((old_board[row][column] === 'b') && (board[row][column] === ' ')) {
           graphic = "empty.gif"; /*empty to black*/
           altTag = "empty space";
         } else if ((old_board[row][column] === 'w') && (board[row][column] === 'b')) {
